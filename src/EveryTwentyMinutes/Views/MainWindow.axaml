@@ -43,8 +43,9 @@
       Grid.Row="3"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
-      Background="Green">
-      Start Timer
+      Background="Green"
+      Command="{Binding ToggleTimerCommand}"
+      Content="{Binding ButtonText}">
     </Button>
   </Grid>
 
