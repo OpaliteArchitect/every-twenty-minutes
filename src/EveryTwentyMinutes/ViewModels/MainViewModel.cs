@@ -9,12 +9,21 @@ namespace EveryTwentyMinutes.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    private const int _timeFontSize = 64;
+    private const int _textFontSize = 24;
+    private const string WorkDurationText = "00:05";
+    private const string BreakDurationText = "00:03";
+
     [ObservableProperty]
-    public partial string Time { get; set; } = "20:00";
+    public partial string MainText { get; set; } = WorkDurationText;
+    [ObservableProperty]
+    public partial int MainTextFontSize { get; set; } = _timeFontSize;
     [ObservableProperty]
     public partial string Description { get; set; } = "Next break in";
     [ObservableProperty]
     public partial string ButtonText { get; set; } = "Start timer";
+    [ObservableProperty]
+    public partial string ButtonColor { get; set; } = "Green";
 
     private readonly Timer _timer = new();
 
@@ -25,11 +34,10 @@ public partial class MainViewModel : ViewModelBase
 
     private void OnSecondElapsed()
     {
-        Debug.WriteLine("elapsed");
         int minutes = _timer.SecondsRemaining / 60;
         int seconds = _timer.SecondsRemaining % 60;
 
-        Time = $"{minutes:d2}:{seconds:d2}";
+        MainText = $"{minutes:d2}:{seconds:d2}";
 
         if (_timer.SecondsRemaining is 0)
         {
@@ -41,16 +49,30 @@ public partial class MainViewModel : ViewModelBase
     {
         if (_timer.IsWorkMode)
         {
-            Description = "Time for a break";
-            Time = "Look at something 20 feet away for 20 seconds.";
-            ButtonText = "Start looking";
+            WorkCompletedUIUpdate();
         }
         else
         {
-            Description = "Great job!";
-            Time = "Your 20 second break is complete. Confirm to resume the 20 minute interval timer.";
-            ButtonText = "Confirm";
+            BreakCompletedUIUpdate();
         }
+    }
+
+    private void WorkCompletedUIUpdate()
+    {
+        Description = "Time for a break";
+        MainText = "Look at something 20 feet away for 20 seconds.";
+        MainTextFontSize = _textFontSize;
+        ButtonText = "Start looking";
+        ButtonColor = "Green";
+    }
+
+    private void BreakCompletedUIUpdate()
+    {
+        Description = "Great job!";
+        MainText = "Your 20 second break is complete.";
+        MainTextFontSize = _textFontSize;
+        ButtonText = "Confirm";
+        ButtonColor = "Green";
     }
 
     [RelayCommand]
@@ -59,42 +81,65 @@ public partial class MainViewModel : ViewModelBase
         switch (_timer.CurrentState)
         {
             case Timer.State.Idle when _timer.IsWorkMode:
-                _timer.StartWork();
-                Time = "20:00";
-                ButtonText = "Pause timer";
+                StartWorkUIUpdate();
                 break;
 
             case Timer.State.Idle when !_timer.IsWorkMode:
-                _timer.StartBreak();
-                Description = "Look 20 feet away";
-                Time = "00:20";
-                ButtonText = "Pause timer";
+                StartBreakUIUpdate();
                 break;
 
             case Timer.State.Paused:
                 _timer.Resume();
                 ButtonText = "Pause timer";
+                ButtonColor = "Purple";
                 break;
 
             case Timer.State.Running:
                 _timer.Pause();
                 ButtonText = "Resume timer";
+                ButtonColor = "Green";
                 break;
 
             case Timer.State.Completed:
-                _timer.IsWorkMode = !_timer.IsWorkMode;
-                _timer.CurrentState = Timer.State.Idle;
-                if (_timer.IsWorkMode)
-                {
-                    Description = "Next break in";
-                    Time = "20:00";
-                    ButtonText = "Start timer";
-                }
-                else
-                {
-                    ClickButton();
-                }
+                EndCurrentWorkMode();
                 break;
         }
+    }
+
+    private void EndCurrentWorkMode()
+    {
+        _timer.IsWorkMode = !_timer.IsWorkMode;
+        _timer.CurrentState = Timer.State.Idle;
+        if (_timer.IsWorkMode)
+        {
+            Description = "Next break in";
+            MainText = WorkDurationText;
+            MainTextFontSize = _timeFontSize;
+            ButtonText = "Start timer";
+            ButtonColor = "Green";
+        }
+        else
+        {
+            ClickButton();
+        }
+    }
+
+    private void StartBreakUIUpdate()
+    {
+        _timer.StartBreak();
+        Description = "Look 20 feet away";
+        MainText = BreakDurationText;
+        MainTextFontSize = _timeFontSize;
+        ButtonText = "Pause timer";
+        ButtonColor = "Purple";
+    }
+
+    private void StartWorkUIUpdate()
+    {
+        _timer.StartWork();
+        MainText = WorkDurationText;
+        MainTextFontSize = _timeFontSize;
+        ButtonText = "Pause timer";
+        ButtonColor = "Purple";
     }
 }
