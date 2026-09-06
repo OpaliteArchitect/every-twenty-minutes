@@ -9,8 +9,15 @@ namespace EveryTwentyMinutes.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    private const int _timeFontSize = 60;
+    private const int _textFontSize = 24;
+    private const string WorkDurationText = "00:05";
+    private const string BreakDurationText = "00:03";
+
     [ObservableProperty]
-    public partial string Time { get; set; } = "20:00";
+    public partial string MainText { get; set; } = WorkDurationText;
+    [ObservableProperty]
+    public partial int MainTextFontSize { get; set; } = _timeFontSize;
     [ObservableProperty]
     public partial string Description { get; set; } = "Next break in";
     [ObservableProperty]
@@ -28,7 +35,7 @@ public partial class MainViewModel : ViewModelBase
         int minutes = _timer.SecondsRemaining / 60;
         int seconds = _timer.SecondsRemaining % 60;
 
-        Time = $"{minutes:d2}:{seconds:d2}";
+        MainText = $"{minutes:d2}:{seconds:d2}";
 
         if (_timer.SecondsRemaining is 0)
         {
@@ -51,14 +58,16 @@ public partial class MainViewModel : ViewModelBase
     private void WorkCompletedUIUpdate()
     {
         Description = "Time for a break";
-        Time = "Look at something 20 feet away for 20 seconds.";
+        MainText = "Look at something 20 feet away for 20 seconds.";
+        MainTextFontSize = _textFontSize;
         ButtonText = "Start looking";
     }
 
     private void BreakCompletedUIUpdate()
     {
         Description = "Great job!";
-        Time = "Your 20 second break is complete. Confirm to resume the 20 minute interval timer.";
+        MainText = "Your 20 second break is complete. Confirm to resume the 20 minute interval timer.";
+        MainTextFontSize = _textFontSize;
         ButtonText = "Confirm";
     }
 
@@ -98,7 +107,8 @@ public partial class MainViewModel : ViewModelBase
         if (_timer.IsWorkMode)
         {
             Description = "Next break in";
-            Time = "20:00";
+            MainText = WorkDurationText;
+            MainTextFontSize = _timeFontSize;
             ButtonText = "Start timer";
         }
         else
@@ -111,14 +121,16 @@ public partial class MainViewModel : ViewModelBase
     {
         _timer.StartBreak();
         Description = "Look 20 feet away";
-        Time = "00:20";
+        MainText = BreakDurationText;
+        MainTextFontSize = _timeFontSize;
         ButtonText = "Pause timer";
     }
 
     private void StartWorkUIUpdate()
     {
         _timer.StartWork();
-        Time = "20:00";
+        MainText = WorkDurationText;
+        MainTextFontSize = _timeFontSize;
         ButtonText = "Pause timer";
     }
 }

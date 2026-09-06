@@ -6,6 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:EveryTwentyMinutes.ViewModels"
     Title="EveryTwentyMinutes"
+    Width="500"
+    Height="300"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainViewModel"
@@ -35,10 +37,10 @@
     <TextBlock
       Grid.Row="1"
       Grid.RowSpan="2"
-      FontSize="60"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
-      Text="{Binding Time}" />
+      FontSize="{Binding MainTextFontSize}"
+      Text="{Binding MainText}" />
     <Button
       Grid.Row="3"
       HorizontalAlignment="Center"
