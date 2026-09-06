@@ -9,7 +9,7 @@ namespace EveryTwentyMinutes.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private const int _timeFontSize = 60;
+    private const int _timeFontSize = 64;
     private const int _textFontSize = 24;
     private const string WorkDurationText = "00:05";
     private const string BreakDurationText = "00:03";
@@ -22,6 +22,8 @@ public partial class MainViewModel : ViewModelBase
     public partial string Description { get; set; } = "Next break in";
     [ObservableProperty]
     public partial string ButtonText { get; set; } = "Start timer";
+    [ObservableProperty]
+    public partial string ButtonColor { get; set; } = "Green";
 
     private readonly Timer _timer = new();
 
@@ -61,14 +63,16 @@ public partial class MainViewModel : ViewModelBase
         MainText = "Look at something 20 feet away for 20 seconds.";
         MainTextFontSize = _textFontSize;
         ButtonText = "Start looking";
+        ButtonColor = "Green";
     }
 
     private void BreakCompletedUIUpdate()
     {
         Description = "Great job!";
-        MainText = "Your 20 second break is complete. Confirm to resume the 20 minute interval timer.";
+        MainText = "Your 20 second break is complete.";
         MainTextFontSize = _textFontSize;
         ButtonText = "Confirm";
+        ButtonColor = "Green";
     }
 
     [RelayCommand]
@@ -87,11 +91,13 @@ public partial class MainViewModel : ViewModelBase
             case Timer.State.Paused:
                 _timer.Resume();
                 ButtonText = "Pause timer";
+                ButtonColor = "Purple";
                 break;
 
             case Timer.State.Running:
                 _timer.Pause();
                 ButtonText = "Resume timer";
+                ButtonColor = "Green";
                 break;
 
             case Timer.State.Completed:
@@ -110,6 +116,7 @@ public partial class MainViewModel : ViewModelBase
             MainText = WorkDurationText;
             MainTextFontSize = _timeFontSize;
             ButtonText = "Start timer";
+            ButtonColor = "Green";
         }
         else
         {
@@ -124,6 +131,7 @@ public partial class MainViewModel : ViewModelBase
         MainText = BreakDurationText;
         MainTextFontSize = _timeFontSize;
         ButtonText = "Pause timer";
+        ButtonColor = "Purple";
     }
 
     private void StartWorkUIUpdate()
@@ -132,5 +140,6 @@ public partial class MainViewModel : ViewModelBase
         MainText = WorkDurationText;
         MainTextFontSize = _timeFontSize;
         ButtonText = "Pause timer";
+        ButtonColor = "Purple";
     }
 }
