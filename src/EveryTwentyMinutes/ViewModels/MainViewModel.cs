@@ -25,7 +25,6 @@ public partial class MainViewModel : ViewModelBase
 
     private void OnSecondElapsed()
     {
-        Debug.WriteLine("elapsed");
         int minutes = _timer.SecondsRemaining / 60;
         int seconds = _timer.SecondsRemaining % 60;
 
@@ -41,16 +40,26 @@ public partial class MainViewModel : ViewModelBase
     {
         if (_timer.IsWorkMode)
         {
-            Description = "Time for a break";
-            Time = "Look at something 20 feet away for 20 seconds.";
-            ButtonText = "Start looking";
+            WorkCompletedUIUpdate();
         }
         else
         {
-            Description = "Great job!";
-            Time = "Your 20 second break is complete. Confirm to resume the 20 minute interval timer.";
-            ButtonText = "Confirm";
+            BreakCompletedUIUpdate();
         }
+    }
+
+    private void WorkCompletedUIUpdate()
+    {
+        Description = "Time for a break";
+        Time = "Look at something 20 feet away for 20 seconds.";
+        ButtonText = "Start looking";
+    }
+
+    private void BreakCompletedUIUpdate()
+    {
+        Description = "Great job!";
+        Time = "Your 20 second break is complete. Confirm to resume the 20 minute interval timer.";
+        ButtonText = "Confirm";
     }
 
     [RelayCommand]
@@ -59,16 +68,11 @@ public partial class MainViewModel : ViewModelBase
         switch (_timer.CurrentState)
         {
             case Timer.State.Idle when _timer.IsWorkMode:
-                _timer.StartWork();
-                Time = "20:00";
-                ButtonText = "Pause timer";
+                StartWorkUIUpdate();
                 break;
 
             case Timer.State.Idle when !_timer.IsWorkMode:
-                _timer.StartBreak();
-                Description = "Look 20 feet away";
-                Time = "00:20";
-                ButtonText = "Pause timer";
+                StartBreakUIUpdate();
                 break;
 
             case Timer.State.Paused:
@@ -82,19 +86,39 @@ public partial class MainViewModel : ViewModelBase
                 break;
 
             case Timer.State.Completed:
-                _timer.IsWorkMode = !_timer.IsWorkMode;
-                _timer.CurrentState = Timer.State.Idle;
-                if (_timer.IsWorkMode)
-                {
-                    Description = "Next break in";
-                    Time = "20:00";
-                    ButtonText = "Start timer";
-                }
-                else
-                {
-                    ClickButton();
-                }
+                EndCurrentWorkMode();
                 break;
         }
+    }
+
+    private void EndCurrentWorkMode()
+    {
+        _timer.IsWorkMode = !_timer.IsWorkMode;
+        _timer.CurrentState = Timer.State.Idle;
+        if (_timer.IsWorkMode)
+        {
+            Description = "Next break in";
+            Time = "20:00";
+            ButtonText = "Start timer";
+        }
+        else
+        {
+            ClickButton();
+        }
+    }
+
+    private void StartBreakUIUpdate()
+    {
+        _timer.StartBreak();
+        Description = "Look 20 feet away";
+        Time = "00:20";
+        ButtonText = "Pause timer";
+    }
+
+    private void StartWorkUIUpdate()
+    {
+        _timer.StartWork();
+        Time = "20:00";
+        ButtonText = "Pause timer";
     }
 }
