@@ -1,9 +1,11 @@
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EveryTwentyMinutes.Models;
+using EveryTwentyMinutes.Services;
 
 namespace EveryTwentyMinutes.ViewModels;
 
@@ -26,6 +28,7 @@ public partial class MainViewModel : ViewModelBase
     public partial string ButtonColor { get; set; } = "Green";
 
     private readonly Timer _timer = new();
+    private readonly WindowsAudioService _audioService = new();
 
     public MainViewModel()
     {
@@ -45,15 +48,17 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    private void ShowCompletedUI()
+    private async Task ShowCompletedUI()
     {
         if (_timer.IsWorkMode)
         {
             WorkCompletedUIUpdate();
+            _ = _audioService.PlayDoubleBeep();
         }
         else
         {
             BreakCompletedUIUpdate();
+            _ = _audioService.PlaySingleBeep();
         }
     }
 
