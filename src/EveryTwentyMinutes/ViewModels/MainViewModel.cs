@@ -13,8 +13,8 @@ public partial class MainViewModel : ViewModelBase
 {
     private const int _timeFontSize = 64;
     private const int _textFontSize = 24;
-    private const string WorkDurationText = "00:05";
-    private const string BreakDurationText = "00:03";
+    private const string WorkDurationText = "20:00";
+    private const string BreakDurationText = "00:20";
 
     [ObservableProperty]
     public partial string MainText { get; set; } = WorkDurationText;
@@ -48,7 +48,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    private async Task ShowCompletedUI()
+    private void ShowCompletedUI()
     {
         if (_timer.IsWorkMode)
         {

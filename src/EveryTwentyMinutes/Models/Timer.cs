@@ -38,7 +38,7 @@ public class Timer
 
     public void StartWork()
     {
-        SecondsRemaining = 5; //20 * 60;
+        SecondsRemaining = 20 * 60;
         _second.Start();
         IsWorkMode = true;
         CurrentState = State.Running;
@@ -46,7 +46,7 @@ public class Timer
 
     public void StartBreak()
     {
-        SecondsRemaining = 3;
+        SecondsRemaining = 20;
         _second.Start();
         IsWorkMode = false;
         CurrentState = State.Running;
